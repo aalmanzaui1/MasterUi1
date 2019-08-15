@@ -1,0 +1,89 @@
+- hosts: localhost
+  #remote_user: alvaroalmanza
+  #become: no
+  #become_method: sudo 
+  gather_facts: yes
+  vars_files:
+    - dev_values.yaml
+  tasks:
+  - name: Create VPC
+    ec2_vpc_net:
+      name:  "{{ name_vpc }}" #Masterui1
+      cidr_block: "{{ cidr }}" #10.0.0.0/16
+      region: "{{ region }}"   #eu-west-1
+      tags:
+        module: ec2_vpc_net
+        enviroment: "{{ env }}" # develop
+        Name: "{{ name_vpc }}"
+      tenancy: default
+    register: vpc_result
+    tags: create_vpc
+  
+  - debug:
+      var: vpc_result.vpc.id
+
+  - name: Create Internet Gateway
+    ec2_vpc_igw:
+      vpc_id: "{{ vpc_result.vpc.id }}"
+      state: present
+    register: igw
+    tags: create_igw
+
+  - name: Create subnets 
+    ec2_vpc_subnet:
+      state: present
+      vpc_id: "{{ vpc_result.vpc.id }}"
+      cidr: "{{ item.net }}"
+      az: "{{ item.az }}"
+      resource_tags:
+        Name: "{{ item.name }}"
+        Type: "{{ item.type }}"
+    with_items: "{{ subnet_info }}"
+    register: net
+    tags: create_vpc
+
+  #- debug:
+  #    var: stdout_lines
+
+  - ec2_vpc_subnet_facts:
+      filters:
+        "tag:Type": public
+    register: net_public
+    tags: get_public_subnets
+
+  #- debug:
+  #    var: net_public.subnets
+
+  - name: Set up public subnet route table
+    ec2_vpc_route_table:
+      vpc_id: "{{ vpc_result.vpc.id }}"
+      region: "{{ region }}"
+      tags:
+        Name: public
+      subnets:
+        - "{{ item.id }}"
+      routes:
+        - dest: 0.0.0.0/0
+          gateway_id: "{{ igw.gateway_id }}"
+    loop: "{{ net_public.subnets }}"
+    register: public_route_table
+
+  - ec2_vpc_subnet_facts:
+      filters:
+        "tag:Type": private
+    register: net_private
+    tags: get_private_subnets
+
+  - name: Set up private subnet route table
+    ec2_vpc_route_table:
+      vpc_id: "{{ vpc_result.vpc.id }}"
+      region: "{{ region }}"
+      tags:
+        Name: private
+      subnets:
+        - "{{ item.id }}"
+      routes:
+        - dest: 10.0.0.0/16
+      #    gateway_id: "{{ igw.gateway_id }}"
+    loop: "{{ net_private.subnets }}"
+    register: private_route_table
