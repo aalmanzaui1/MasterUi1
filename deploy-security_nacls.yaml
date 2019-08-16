@@ -1,0 +1,33 @@
+- hosts: localhost
+  #remote_user: alvaroalmanza
+  #become: no
+  #become_method: sudo 
+  gather_facts: yes
+  vars_files:
+    - security_values.yaml
+  tasks:
+  - name: Create NACL public Networks
+    ec2_vpc_nacl:
+      vpc_id: "{{ vpc_id }}"
+      name: public_nacl
+      region: "{{ region }}"
+      subnets: "{{ public_subnets }}"
+      tags:
+        Type: "public"
+      ingress: "{{ ingress_public_nacl_rules }}"
+      egress: "{{ egress_public_nacl_rules }}"
+      state: 'present'
+    tags: create_nacl_public_networks
+
+  - name: Create NACL private Networks
+    ec2_vpc_nacl:
+      vpc_id: "{{ vpc_id }}"
+      name: private_nacl
+      region: "{{ region }}"
+      subnets: "{{ private_subnets }}"
+      tags:
+        Type: "public"
+      ingress: "{{ ingress_private_nacl_rules }}"
+      egress: "{{ egress_private_nacl_rules }}"
+      state: 'present'
+    tags: create_nacl_private_networks

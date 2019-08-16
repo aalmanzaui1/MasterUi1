@@ -1,0 +1,43 @@
+name: Kubernetes_security
+
+vpc_id: vpc-0a5ea6c1bddd46fe2
+
+region: eu-west-1
+
+list_rules:
+    - proto: tcp
+      ports:
+      - 80
+      cidr_ip: 10.0.0.0/16
+      rule_desc: "Web service to Elastic Load Balancers"
+    - proto: tcp
+      ports:
+      - 4149
+      cidr_ip: 10.0.0.0/16
+      rule_desc: "Default cAdvisor port used to query container metrics"
+    - proto: tcp
+      ports:
+      - 10250
+      cidr_ip: 10.0.0.0/16
+      rule_desc: "API which allows full node access"
+    - proto: tcp
+      ports:
+      - 10255
+      cidr_ip: 10.0.0.0/16
+      rule_desc: "Unauthenticated read-only port, allowing access to node state"
+    - proto: tcp
+      ports:
+      - 10256
+      cidr_ip: 10.0.0.0/16
+      rule_desc: "Health check server for Kube Proxy"
+    - proto: tcp
+      ports:
+      - 6443
+      cidr_ip: 10.0.0.0/16
+      rule_desc: "Kubernetes API port"
+    - proto: tcp
+      ports:
+      - 8285
+      - 8472
+      cidr_ip: 10.0.0.0/16
+      rule_desc: "Flannel network"

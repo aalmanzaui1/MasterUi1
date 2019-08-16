@@ -49,7 +49,7 @@
       filters:
         "tag:Type": public
     register: net_public
-    tags: get_public_subnets
+    tags: get_public_subnets,create_public_nacl
 
   #- debug:
   #    var: net_public.subnets
@@ -67,6 +67,7 @@
           gateway_id: "{{ igw.gateway_id }}"
     loop: "{{ net_public.subnets }}"
     register: public_route_table
+    tags: create_public_route_table 
 
   - ec2_vpc_subnet_facts:
       filters:
@@ -87,3 +88,4 @@
       #    gateway_id: "{{ igw.gateway_id }}"
     loop: "{{ net_private.subnets }}"
     register: private_route_table
+    tags: create_private_route_table

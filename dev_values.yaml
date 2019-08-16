@@ -1,6 +1,6 @@
 name_vpc: Masterui1
 cidr: 10.0.0.0/16
-region: 
+region: eu-west-1
 env: develop
 subnet_info:  
   - { name: "publicAZ1", net: "10.0.1.0/24", az: "eu-west-1a", type: "public" }
@@ -9,3 +9,4 @@ subnet_info:
   - { name: "privateAZ1", net: "10.0.4.0/24", az: "eu-west-1a", type: "private" }
   - { name: "privateAZ2", net: "10.0.5.0/24", az: "eu-west-1b", type: "private" }
   - { name: "privateAZ3", net: "10.0.6.0/24", az: "eu-west-1c", type: "private" }
+

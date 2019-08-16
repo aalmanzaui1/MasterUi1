@@ -1,0 +1,15 @@
+- hosts: localhost
+  #remote_user: alvaroalmanza
+  #become: no
+  #become_method: sudo 
+  gather_facts: yes
+  vars_files:
+    - "{{ file_vars }}"
+  tasks:
+  - name: Create or update Security groups
+    ec2_group:
+      name: "{{ name }}"
+      description: sg with rule descriptions
+      vpc_id: "{{ vpc_id }}"
+      region: "{{ region }}"
+      rules: "{{ list_rules }}"

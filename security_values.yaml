@@ -1,0 +1,25 @@
+vpc_id: vpc-0a5ea6c1bddd46fe2
+
+region: eu-west-1
+
+# Public data networks
+public_subnets: [ 'subnet-001d334a17403732b', 'subnet-07bfb26dfb66ca27b', 'subnet-0d66dbdf6da53f7cd']
+
+ingress_public_nacl_rules:
+  - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 22, 22]
+  - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
+  - [300, 'tcp', 'allow', '0.0.0.0/0', null, null, 443, 443]
+
+egress_public_nacl_rules:
+  - [100, 'all', 'allow', '0.0.0.0/0', null, null, null, null]
+
+# Private data networks
+private_subnets: [ 'subnet-0bb0b6050fb1adce4', 'subnet-08ba1774dcf9b1097', 'subnet-0946e6b4e65a56f1a']
+
+ingress_private_nacl_rules:
+  - [100, 'all', 'allow', '10.0.0.0/16', null, null, null, null]
+  #- [200, 'tcp', 'allow', '10.0.0.0/16', null, null, 80, 80]
+  #- [300, 'tcp', 'allow', '10.0.0.0/16', null, null, 443, 443]
+
+egress_private_nacl_rules:
+  - [100, 'all', 'allow', '0.0.0.0/0', null, null, null, null]
