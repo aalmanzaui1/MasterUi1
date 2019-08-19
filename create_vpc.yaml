@@ -29,18 +29,7 @@
     register: igw
     tags: create_igw
 
-  - name: Create subnets 
-    ec2_vpc_subnet:
-      state: present
-      vpc_id: "{{ vpc_result.vpc.id }}"
-      cidr: "{{ item.net }}"
-      az: "{{ item.az }}"
-      resource_tags:
-        Name: "{{ item.name }}"
-        Type: "{{ item.type }}"
-    with_items: "{{ subnet_info }}"
-    register: net
-    tags: create_vpc
+l
 
   #- debug:
   #    var: stdout_lines
@@ -89,3 +78,11 @@
     loop: "{{ net_private.subnets }}"
     register: private_route_table
     tags: create_private_route_table
+  
+  - name: Create new nat gateway and allocate new EIP.
+    ec2_vpc_nat_gateway:
+      state: present
+      subnet_id: "{{ item[2].id }}"
+      wait: yes
+      region: "{{ region }}"
+    register: new_nat_gateway
