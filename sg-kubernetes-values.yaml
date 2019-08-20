@@ -35,7 +35,7 @@ list_rules:
       - 6443
       cidr_ip: 10.0.0.0/16
       rule_desc: "Kubernetes API port"
-    - proto: tcp
+    - proto: udp
       ports:
       - 8285
       - 8472
