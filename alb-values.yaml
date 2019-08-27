@@ -1,0 +1,10 @@
+gname: kops
+tgname: tg-kops
+protocol: http
+secure_protocol: https
+port: 80
+secure_port: 443
+vpc_id: vpc-0a5ea6c1bddd46fe2
+alb_name: kops-alb
+sg_groups: 
+  - Kubernetes_security

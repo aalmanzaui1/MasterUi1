@@ -1,0 +1,48 @@
+- hosts: localhost
+  #remote_user: alvaroalmanza
+  #become: no
+  #become_method: sudo
+  gather_facts: yes
+  vars_files:
+    - alb_values.yaml
+  tasks:
+  - name: Create Target Group
+    elb_target_group:
+      name: "{{ tgname }}"
+      protocol: "{{ protocol }}"
+      port: "{{ port }}"
+      vpc_id: "{{ vpc_id }}"
+    state: present
+    register: tggroup
+    
+  - ec2_vpc_subnet_facts:
+      filters:
+        "tag:Type": private
+    register: net_private
+    tags: get_private_subnets
+
+  - name: Create Application Load Balancer
+    elb_application_lb:
+      name: "{{ alb_name }}"
+      security_groups: "{{ sg_groups }}"
+      subnets:
+        - "{{ item.id }}"
+      listeners:
+        - Protocol: "{{ protocol }}" # Required. The protocol for connections from clients to the load balancer (HTTP or HTTPS) (case-sensitive).
+          Port: "{{ port }}" # Required. The port on which the load balancer is listening.
+          SslPolicy: ELBSecurityPolicy-2015-05
+          Certificates: 
+            - CertificateArn: "{{ cert_arn }}"
+          DefaultActions:
+            - Type: forward # Required. Only 'forward' is accepted at this time
+              TargetGroupName: "{{ tggroup.id }}"
+        - Protocol: "{{ secure_protocol }}"
+          Port: "{{ secure_port }}"
+          DefaultActions:
+            - Type: forward
+              TargetGroupName: "{{ tggroup.id }}"
+          Certificates:
+            - CertificateArn: "{{ cert_arn }}"
+    state: present
+    loop: "{{ net_private.subnets }}"
+    

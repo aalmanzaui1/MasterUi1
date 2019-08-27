@@ -1,0 +1,15 @@
+kops create cluster \
+--vpc vpc-0a5ea6c1bddd46fe2 \
+--state=s3://kops-masterui1 \
+--ssh-public-key .ssh/kops.pub \
+--node-count 3 \
+--zones eu-west-1a,eu-west-1b,eu-west-1c \
+--master-zones eu-west-1a \
+--dns-zone almatronics.es \
+--node-size t2.micro \
+--master-size t2.micro \
+--topology private \
+--networking flannel-vxlan \
+--cloud-labels "Team=Universidadui1,Owner=Alvaro Almanza" \
+--image kope.io/k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-05-13 \
+k8ui1.almatronics.es

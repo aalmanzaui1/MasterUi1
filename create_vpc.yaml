@@ -86,3 +86,4 @@ l
       wait: yes
       region: "{{ region }}"
     register: new_nat_gateway
+    tags: create_nat

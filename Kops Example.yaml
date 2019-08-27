@@ -1,0 +1,71 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  creationTimestamp: 2019-08-24T07:02:33Z
+  name: k8ui1.almatronics.es
+spec:
+  api:
+    loadBalancer:
+      type: Internal
+      sslCertificate: arn:aws:acm:eu-west-1:975195398054:certificate/1e526dd6-1b47-4f95-a9b5-2175f01dc66d
+  authorization:
+    rbac: {}
+  channel: stable
+  cloudLabels:
+    Owner: Alvaro Almanza
+    Team: ciberseguridad-ui1
+  cloudProvider: aws
+  configBase: s3://kops-masterui1/k8ui1.almatronics.es
+  dnsZone: almatronics.es
+  etcdClusters:
+  - cpuRequest: 200m
+    etcdMembers:
+    - instanceGroup: master-eu-west-1a
+      name: a
+    memoryRequest: 100Mi
+    name: main
+  - cpuRequest: 100m
+    etcdMembers:
+    - instanceGroup: master-eu-west-1a
+      name: a
+    memoryRequest: 100Mi
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubelet:
+    anonymousAuth: false
+  kubernetesApiAccess:
+    - 10.0.0.0/16
+  kubernetesVersion: 1.12.10
+  masterInternalName: api.internal.k8ui1.almatronics.es
+  masterPublicName: api.k8ui1.almatronics.es
+  networkCIDR: 10.0.0.0/16
+  networkID: vpc-0a5ea6c1bddd46fe2
+  networking:
+    flannel:
+      backend: vxlan
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 10.0.0.0/16
+  subnets:
+  - cidr: 10.0.4.0/24
+    id: subnet-0bb0b6050fb1adce4
+    name: eu-west-1a
+    type: Private
+    zone: eu-west-1a
+  - cidr: 10.0.5.0/24
+    id: subnet-08ba1774dcf9b1097
+    name: eu-west-1b
+    type: Private
+    zone: eu-west-1b
+  - cidr: 10.0.6.0/24
+    id: subnet-0946e6b4e65a56f1a
+    name: eu-west-1c
+    type: Private
+    zone: eu-west-1c
+  topology:
+    dns:
+      type: Public
+    masters: private
+    nodes: private
